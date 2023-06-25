@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33717.318
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingAPI.Entity", "ShoppingAPI.Entity\ShoppingAPI.Entity.csproj", "{C13F3BA6-0A6C-4AC2-9B46-935EEB3614F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.DAL", "Shopping.DAL\Shopping.DAL.csproj", "{1E0E72ED-7DF8-42E1-AAB5-57127AF5171A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C13F3BA6-0A6C-4AC2-9B46-935EEB3614F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C13F3BA6-0A6C-4AC2-9B46-935EEB3614F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C13F3BA6-0A6C-4AC2-9B46-935EEB3614F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C13F3BA6-0A6C-4AC2-9B46-935EEB3614F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E0E72ED-7DF8-42E1-AAB5-57127AF5171A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E0E72ED-7DF8-42E1-AAB5-57127AF5171A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E0E72ED-7DF8-42E1-AAB5-57127AF5171A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E0E72ED-7DF8-42E1-AAB5-57127AF5171A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1ACF7AAD-840B-4189-8B64-67F844CCB038}
+	EndGlobalSection
+EndGlobal
