@@ -24,6 +24,10 @@ namespace Shopping.DAL.Concrete.EntityFramework.DataManagement
             _contextAccessor = contextAccessor;
 
             CategoryRepository = new EfCategoryRepository(_shoppingContext);
+            UserRepository = new EfUserRepository(_shoppingContext);
+            OrderRepository = new EfOrderRepository(_shoppingContext);
+            ProductRepository = new EfProductRepository(_shoppingContext);
+            OrderDetailRepository = new EfOrderDetailRepository(_shoppingContext);
 
         }
 
