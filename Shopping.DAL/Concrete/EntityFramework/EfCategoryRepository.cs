@@ -14,7 +14,6 @@ namespace Shopping.DAL.Concrete.EntityFramework
     {
         public EfCategoryRepository(DbContext context) : base(context)
         {
-            //Merhaba Arkadaşlar
         }
     }
 }
