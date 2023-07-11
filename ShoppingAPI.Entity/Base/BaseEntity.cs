@@ -2,6 +2,10 @@
 {
     public class BaseEntity
     {
+        public BaseEntity()
+        {
+            this.GUID = Guid.NewGuid();
+        }
         public int ID { get; set; }
         public Guid GUID { get; set; }
 

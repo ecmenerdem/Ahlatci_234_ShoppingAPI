@@ -19,7 +19,7 @@ namespace Shopping.DAL.Concrete.EntityFramework.Context
                 //    optionsBuilder.UseSqlServer("data source=.\\ZRVSQL2008;initial catalog=ShoppingDB;integrated security=True; TrustServerCertificate=true");
                 //}
 
-                optionsBuilder.UseSqlServer("data source=.;initial catalog=Shopping234DB;integrated security=True; TrustServerCertificate=true");
+                optionsBuilder.UseSqlServer("data source=.\\ZRVSQL2008;initial catalog=Shopping234DB;integrated security=True; TrustServerCertificate=true");
 
             }
 
