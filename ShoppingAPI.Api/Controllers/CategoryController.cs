@@ -38,7 +38,7 @@ namespace ShoppingAPI.Api.Controllers
                 Name = category.Name
             };
 
-            return Ok(new Sonuc<CategoryDTOResponse>(categoryDTOResponse,"İşlem Başarılı", (int)HttpStatusCode.OK, null));
+            return Ok(Sonuc<CategoryDTOResponse>.SuccessWithData(categoryDTOResponse));
         }
 
         [HttpGet("/Categories")]
@@ -59,50 +59,74 @@ namespace ShoppingAPI.Api.Controllers
                         Name = category.Name
                     });
                 }
-
-                return Ok(new Sonuc<List<CategoryDTOResponse>>(categoryDtoResponseList, "İşlem Başarılı", (int)HttpStatusCode.OK, null));
+                
+                return Ok(Sonuc<List<CategoryDTOResponse>>.SuccessWithData(categoryDtoResponseList));
             }
 
             else
             {
-                return NotFound(new Sonuc<List<CategoryDTOResponse>>(null, "Sonuç Bulunamadı", 200, new HataBilgisi()
-                {
-                    Hata = null,
-                    HataAciklama = "Sonuç Bulunamadı"
-                }));
+                return NotFound(Sonuc<List<CategoryDTOResponse>>.SuccessNoDataFound());
             }
         }
 
-        [HttpGet("/Category/{id}")]
+        //[HttpGet("/Category/{id}")]
+        //[ProducesResponseType(typeof(Sonuc<CategoryDTOResponse>), (int)HttpStatusCode.OK)]
+
+        //public async Task<IActionResult>GetCategoryByID(int id)
+        //{
+        //    var category = await _categoryService.GetAsync(q => q.ID == id);
+
+        //    if (category!=null)
+        //    {
+        //        CategoryDTOResponse categoryDTOResponse = new()
+        //        {
+        //            Name = category.Name,
+        //            Guid = category.GUID,
+        //        };
+
+        //        return Ok(Sonuc<CategoryDTOResponse>.SuccessWithData(categoryDTOResponse));
+        //    }
+        //    else
+        //    {
+        //        return NotFound(Sonuc<List<CategoryDTOResponse>>.SuccessNoDataFound());
+        //    }
+        //}
+
+        [HttpGet("/Category/{guid}")]
         [ProducesResponseType(typeof(Sonuc<CategoryDTOResponse>), (int)HttpStatusCode.OK)]
-
-        public async Task<IActionResult>GetCategoryByID(int id)
+        public async Task<IActionResult> GetCategoryByGUID(Guid guid)
         {
-            var category = await _categoryService.GetAsync(q => q.ID == id);
+            var category = await _categoryService.GetAsync(q => q.GUID == guid);
 
-            if (category!=null)
+            if (category != null)
             {
                 CategoryDTOResponse categoryDTOResponse = new()
                 {
                     Name = category.Name,
                     Guid = category.GUID,
                 };
-                return Ok(new Sonuc<CategoryDTOResponse>(categoryDTOResponse, "İşlem Başarılı", (int)HttpStatusCode.OK, null));
+
+                return Ok(Sonuc<CategoryDTOResponse>.SuccessWithData(categoryDTOResponse));
             }
             else
             {
-                return NotFound(new Sonuc<CategoryDTOResponse>(null, "Sonuç Bulunamadı", (int)HttpStatusCode.NotFound, new HataBilgisi()
-                {
-                    Hata=null,
-                    HataAciklama="Sonuç Bulunamadı"
-                }));
+                return NotFound(Sonuc<List<CategoryDTOResponse>>.SuccessNoDataFound());
             }
         }
 
-        //[HttpGet("/Category/{guid}")]
-        //public async Task<IActionResult>GetCategoryByGUID(Guid guid)
-        //{
+        [HttpPost("/UpdateCategory")]
 
-        //}
+        public async Task<IActionResult>UpdateCategory(CategoryDTORequest categoryDTORequest)
+        {
+            Category category = await _categoryService.GetAsync(q => q.GUID == categoryDTORequest.Guid);
+
+            category.Name = categoryDTORequest.Name;
+            category.IsActive = categoryDTORequest.IsActive != null ? categoryDTORequest.IsActive : category.IsActive;
+
+            await _categoryService.UpdateAsync(category);
+
+            return Ok(Sonuc<CategoryDTOResponse>.SuccessWithoutData());
+        }
+
     }
 }

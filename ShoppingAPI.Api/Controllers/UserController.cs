@@ -46,7 +46,7 @@ namespace ShoppingAPI.Api.Controllers
                 Adress = user.Adress,
                 Guid = user.GUID
             };
-            return Ok(new Sonuc<UserDTOResponse>(userDTOResponse, "İşlem Başarılı", (int)HttpStatusCode.OK, null));
+            return Ok(Sonuc<UserDTOResponse>.SuccessWithData(userDTOResponse));
         }
 
         [HttpGet("/User/{guid}")]
@@ -69,22 +69,13 @@ namespace ShoppingAPI.Api.Controllers
                     Guid = user.GUID
                 };
 
-                return Ok(new Sonuc<UserDTOResponse>(userDTOResponse, "Sonuç Bulunamadı", (int)HttpStatusCode.OK, null));
+                return Ok(Sonuc<UserDTOResponse>.SuccessWithData(userDTOResponse));
 
             }
             else
             {
-                return NotFound(new Sonuc<UserDTOResponse>(
-                    null,
-                    "İşlem Başarılı",
-                    (int)HttpStatusCode.NotFound,
-                    new HataBilgisi()
-                    {
-                        Hata = null,
-                        HataAciklama = "Sonuç Bulunamadı"
-                    })
-
-                    );
+                return NotFound(Sonuc<UserDTOResponse>.SuccessNoDataFound());
+                    
             }
 
         }

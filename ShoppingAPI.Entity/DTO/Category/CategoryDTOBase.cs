@@ -8,6 +8,9 @@ namespace ShoppingAPI.Entity.DTO.Category
 {
     public class CategoryDTOBase
     {
+        public Guid? Guid { get; set; }
         public string Name { get; set; }
+
+        public bool? IsActive { get; set; }
     }
 }
