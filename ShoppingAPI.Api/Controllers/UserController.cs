@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Shopping.Business.Abstract;
+using ShoppingAPI.Api.Validation.FluentValidation;
+using ShoppingAPI.Entity.DTO.Category;
 using ShoppingAPI.Entity.DTO.User;
 using ShoppingAPI.Entity.Poco;
 using ShoppingAPI.Entity.Result;
+using ShoppingAPI.Helper.CustomException;
 using System.Net;
 
 namespace ShoppingAPI.Api.Controllers
@@ -12,41 +16,44 @@ namespace ShoppingAPI.Api.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
+            _mapper = mapper;
         }
 
         [HttpPost("/AddUser")]
         [ProducesResponseType(typeof(Sonuc<UserDTOResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> AddUser(UserDTORequest userDTORequest)
         {
-            User user = new()
-            {
-                FirstName = userDTORequest.FirstName,
-                LastName = userDTORequest.LastName,
-                Username = userDTORequest.Username,
-                Password = userDTORequest.Password,
-                Email = userDTORequest.Email,
-                PhoneNumber = userDTORequest.PhoneNumber,
-                Adress = userDTORequest.Adress,
-            };
+            
+                UserRegisterValidator userValidator = new();
 
-            await _userService.AddAsync(user);
+                if (userValidator.Validate(userDTORequest).IsValid)
+                {
+                    User user = _mapper.Map<User>(userDTORequest);
 
-            UserDTOResponse userDTOResponse = new()
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Username = user.Username,
-                Password = user.Password,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Adress = user.Adress,
-                Guid = user.GUID
-            };
-            return Ok(new Sonuc<UserDTOResponse>(userDTOResponse, "İşlem Başarılı", (int)HttpStatusCode.OK, null));
+                    await _userService.AddAsync(user);
+
+                    UserDTOResponse userDTOResponse = _mapper.Map<UserDTOResponse>(user);
+                    return Ok(Sonuc<UserDTOResponse>.SuccessWithData(userDTOResponse));
+                }
+                else
+                {
+                    List<string> validationMessages = new();
+                    for (int i = 0; i < userValidator.Validate(userDTORequest).Errors.Count; i++)
+                    {
+                        validationMessages.Add(userValidator.Validate(userDTORequest).Errors[i].ErrorMessage);
+                    }
+
+                throw new FieldValidationException(validationMessages);
+            }
+          
+
+            
+         
         }
 
         [HttpGet("/User/{guid}")]
@@ -57,34 +64,16 @@ namespace ShoppingAPI.Api.Controllers
             var user = await _userService.GetAsync(q => q.GUID == guid);
             if (user != null)
             {
-                UserDTOResponse userDTOResponse = new()
-                {
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Username = user.Username,
-                    Password = user.Password,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber,
-                    Adress = user.Adress,
-                    Guid = user.GUID
-                };
+                UserDTOResponse userDTOResponse = _mapper.Map<UserDTOResponse>(user);
 
-                return Ok(new Sonuc<UserDTOResponse>(userDTOResponse, "Sonuç Bulunamadı", (int)HttpStatusCode.OK, null));
+
+                return Ok(Sonuc<UserDTOResponse>.SuccessWithData(userDTOResponse));
 
             }
             else
             {
-                return NotFound(new Sonuc<UserDTOResponse>(
-                    null,
-                    "İşlem Başarılı",
-                    (int)HttpStatusCode.NotFound,
-                    new HataBilgisi()
-                    {
-                        Hata = null,
-                        HataAciklama = "Sonuç Bulunamadı"
-                    })
-
-                    );
+                return NotFound(Sonuc<UserDTOResponse>.SuccessNoDataFound());
+                    
             }
 
         }

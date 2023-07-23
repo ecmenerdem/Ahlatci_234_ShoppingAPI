@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace ShoppingAPI.Entity.DTO.Category
 {
-    public class CategoryDTOBase
+    public class CategoryUpdateDTORequest
     {
         public string Name { get; set; }
-
+        public Guid? Guid { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

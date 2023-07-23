@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShoppingAPI.Entity.DTO.Category
+namespace ShoppingAPI.Helper.Globals
 {
-    public class CategoryDTOBase
+    public class JWTExceptURLList
     {
-        public string Name { get; set; }
+        public List<string> URLList { get; set; }
 
     }
 }

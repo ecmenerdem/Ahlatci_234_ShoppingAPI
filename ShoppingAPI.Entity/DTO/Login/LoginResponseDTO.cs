@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShoppingAPI.Entity.DTO.Category
+namespace ShoppingAPI.Entity.DTO.Login
 {
-    public class CategoryDTOBase
+    public class LoginResponseDTO
     {
-        public string Name { get; set; }
-
+        public string Token { get; set; }
     }
 }

@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Shopping.Business.Abstract;
 using Shopping.Business.Concrete;
+using ShoppingAPI.Api.Validation.FluentValidation;
 using ShoppingAPI.Entity.DTO.Category;
 using ShoppingAPI.Entity.DTO.User;
 using ShoppingAPI.Entity.Poco;
 using ShoppingAPI.Entity.Result;
+using ShoppingAPI.Helper.CustomException;
 using System.Net;
 
 namespace ShoppingAPI.Api.Controllers
@@ -14,10 +17,12 @@ namespace ShoppingAPI.Api.Controllers
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
+        private readonly IMapper _mapper;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, IMapper mapper)
         {
             _categoryService = categoryService;
+            _mapper = mapper;
         }
 
         [HttpPost("/AddCategory")]
@@ -25,20 +30,31 @@ namespace ShoppingAPI.Api.Controllers
 
         public async Task<IActionResult> AddCategory(CategoryDTORequest categoryDTORequest)
         {
-            Category category = new()
+            CategoryValidator categoryValidator = new CategoryValidator();
+
+            if (categoryValidator.Validate(categoryDTORequest).IsValid)
             {
-                Name = categoryDTORequest.Name
-            };
+            
+                Category category = _mapper.Map<Category>(categoryDTORequest);
 
-           await _categoryService.AddAsync(category);
-
-            CategoryDTOResponse categoryDTOResponse = new()
+                await _categoryService.AddAsync(category);
+                CategoryDTOResponse categoryDTOResponse=_mapper.Map<CategoryDTOResponse>(category);
+              
+                return Ok(Sonuc<CategoryDTOResponse>.SuccessWithData(categoryDTOResponse));
+            }
+            else
             {
-                Guid = category.GUID,
-                Name = category.Name
-            };
+                List<string> validationMessages = new();
+                for (int i = 0; i < categoryValidator.Validate(categoryDTORequest).Errors.Count; i++)
+                {
+                    validationMessages.Add(categoryValidator.Validate(categoryDTORequest).Errors[i].ErrorMessage);
+                }
 
-            return Ok(new Sonuc<CategoryDTOResponse>(categoryDTOResponse,"İşlem Başarılı", (int)HttpStatusCode.OK, null));
+                //return BadRequest(Sonuc<CategoryDTOResponse>.FieldValidationError(validationMessages));
+
+                throw new FieldValidationException(validationMessages);
+            }
+          
         }
 
         [HttpGet("/Categories")]
@@ -53,56 +69,72 @@ namespace ShoppingAPI.Api.Controllers
 
                 foreach (var category in categories)
                 {
-                    categoryDtoResponseList.Add(new CategoryDTOResponse()
-                    {
-                        Guid = category.GUID,
-                        Name = category.Name
-                    });
+                    categoryDtoResponseList.Add(_mapper.Map<CategoryDTOResponse>(category));
                 }
-
-                return Ok(new Sonuc<List<CategoryDTOResponse>>(categoryDtoResponseList, "İşlem Başarılı", (int)HttpStatusCode.OK, null));
+                
+                return Ok(Sonuc<List<CategoryDTOResponse>>.SuccessWithData(categoryDtoResponseList));
             }
 
             else
             {
-                return NotFound(new Sonuc<List<CategoryDTOResponse>>(null, "Sonuç Bulunamadı", 200, new HataBilgisi()
-                {
-                    Hata = null,
-                    HataAciklama = "Sonuç Bulunamadı"
-                }));
+                return NotFound(Sonuc<List<CategoryDTOResponse>>.SuccessNoDataFound());
             }
         }
 
-        [HttpGet("/Category/{id}")]
-        [ProducesResponseType(typeof(Sonuc<CategoryDTOResponse>), (int)HttpStatusCode.OK)]
+        //[HttpGet("/Category/{id}")]
+        //[ProducesResponseType(typeof(Sonuc<CategoryDTOResponse>), (int)HttpStatusCode.OK)]
 
-        public async Task<IActionResult>GetCategoryByID(int id)
-        {
-            var category = await _categoryService.GetAsync(q => q.ID == id);
-
-            if (category!=null)
-            {
-                CategoryDTOResponse categoryDTOResponse = new()
-                {
-                    Name = category.Name,
-                    Guid = category.GUID,
-                };
-                return Ok(new Sonuc<CategoryDTOResponse>(categoryDTOResponse, "İşlem Başarılı", (int)HttpStatusCode.OK, null));
-            }
-            else
-            {
-                return NotFound(new Sonuc<CategoryDTOResponse>(null, "Sonuç Bulunamadı", (int)HttpStatusCode.NotFound, new HataBilgisi()
-                {
-                    Hata=null,
-                    HataAciklama="Sonuç Bulunamadı"
-                }));
-            }
-        }
-
-        //[HttpGet("/Category/{guid}")]
-        //public async Task<IActionResult>GetCategoryByGUID(Guid guid)
+        //public async Task<IActionResult>GetCategoryByID(int id)
         //{
+        //    var category = await _categoryService.GetAsync(q => q.ID == id);
 
+        //    if (category!=null)
+        //    {
+        //        CategoryDTOResponse categoryDTOResponse = new()
+        //        {
+        //            Name = category.Name,
+        //            Guid = category.GUID,
+        //        };
+
+        //        return Ok(Sonuc<CategoryDTOResponse>.SuccessWithData(categoryDTOResponse));
+        //    }
+        //    else
+        //    {
+        //        return NotFound(Sonuc<List<CategoryDTOResponse>>.SuccessNoDataFound());
+        //    }
         //}
+
+        [HttpGet("/Category/{guid}")]
+        [ProducesResponseType(typeof(Sonuc<CategoryDTOResponse>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetCategoryByGUID(Guid guid)
+        {
+            var category = await _categoryService.GetAsync(q => q.GUID == guid);
+
+            if (category != null)
+            {
+                CategoryDTOResponse categoryDTOResponse = _mapper.Map<CategoryDTOResponse>(category);
+
+                return Ok(Sonuc<CategoryDTOResponse>.SuccessWithData(categoryDTOResponse));
+            }
+            else
+            {
+                return NotFound(Sonuc<List<CategoryDTOResponse>>.SuccessNoDataFound());
+            }
+        }
+
+        [HttpPost("/UpdateCategory")]
+
+        public async Task<IActionResult>UpdateCategory(CategoryUpdateDTORequest categoryUpdateDTORequest)
+        {
+            Category category = await _categoryService.GetAsync(q => q.GUID == categoryUpdateDTORequest.Guid);
+
+            category.Name = categoryUpdateDTORequest.Name;
+            category.IsActive = categoryUpdateDTORequest.IsActive != null ? categoryUpdateDTORequest.IsActive : category.IsActive;
+
+            await _categoryService.UpdateAsync(category);
+
+            return Ok(Sonuc<CategoryDTOResponse>.SuccessWithoutData());
+        }
+
     }
 }

@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.DAL", "Shopping.DA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.Business", "Shopping.Business\Shopping.Business.csproj", "{D21CAF5C-FB9A-4497-A640-68C87BBF2338}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingAPI.Api", "ShoppingAPI.Api\ShoppingAPI.Api.csproj", "{CA99F5F3-FF22-4C48-B960-BEA9F0A06CB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingAPI.Api", "ShoppingAPI.Api\ShoppingAPI.Api.csproj", "{CA99F5F3-FF22-4C48-B960-BEA9F0A06CB5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingAPI.Helper", "ShoppingAPI.Helper\ShoppingAPI.Helper.csproj", "{A188C80A-7566-424A-99E8-6BD48728642D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{CA99F5F3-FF22-4C48-B960-BEA9F0A06CB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA99F5F3-FF22-4C48-B960-BEA9F0A06CB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA99F5F3-FF22-4C48-B960-BEA9F0A06CB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A188C80A-7566-424A-99E8-6BD48728642D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A188C80A-7566-424A-99E8-6BD48728642D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A188C80A-7566-424A-99E8-6BD48728642D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A188C80A-7566-424A-99E8-6BD48728642D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
