@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using ShoppingAPI.Api.Aspects;
 
 namespace ShoppingAPI.Api.Controllers
 {
@@ -25,15 +26,14 @@ namespace ShoppingAPI.Api.Controllers
             _userService = userService;
             _configuration = configuration;
         }
-
+        [ValidationFilter(typeof(LoginValidator))]
         [HttpPost("/Login")]
         [ProducesResponseType(typeof(Sonuc<LoginResponseDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> LoginAsync(LoginRequestDTO loginRequestDTO)
         {
-            LoginValidator loginValidator = new();
+           
 
-            if (loginValidator.Validate(loginRequestDTO).IsValid)
-            {
+           
                 var user = await _userService.GetAsync(q => q.Username == loginRequestDTO.KullaniciAdi && q.Password == loginRequestDTO.Sifre);
 
                 if (user == null)
@@ -65,21 +65,7 @@ namespace ShoppingAPI.Api.Controllers
 
                 }
 
-            }
-            else
-            {
-                List<string> validationMessages = new();
-                for (int i = 0; i < loginValidator.Validate(loginRequestDTO).Errors.Count; i++)
-                {
-                    validationMessages.Add(loginValidator.Validate(loginRequestDTO).Errors[i].ErrorMessage);
-                }
-
-                //return BadRequest(Sonuc<CategoryDTOResponse>.FieldValidationError(validationMessages));
-
-                throw new FieldValidationException(validationMessages);
-            }
-
-
+           
 
         }
     }
