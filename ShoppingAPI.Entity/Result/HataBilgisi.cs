@@ -11,7 +11,7 @@ namespace ShoppingAPI.Entity.Result
         public string HataAciklama { get; set; }
         public object Hata { get; set; }
 
-        public static HataBilgisi NotFound(string hataAciklama = "Sonuç Bulunamdı", object? hata = null)
+        public static HataBilgisi NotFound(string hataAciklama = "Sonuç Bulunamadı", object? hata = null)
         {
             return new HataBilgisi { Hata = hata, HataAciklama = hataAciklama };
 

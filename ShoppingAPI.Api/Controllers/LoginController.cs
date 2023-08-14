@@ -58,6 +58,10 @@ namespace ShoppingAPI.Api.Controllers
 
                     LoginResponseDTO loginResponseDTO = new()
                     {
+                        AdSoyad=user.FirstName+ " "+ user.LastName,
+                        UserID = user.ID,
+                        EPosta=user.Email,
+                        Adres=user.Adress,
                         Token = token
                     };
 

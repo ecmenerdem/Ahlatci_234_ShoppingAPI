@@ -61,7 +61,7 @@ namespace ShoppingAPI.Api.Controllers
         [ProducesResponseType(typeof(Sonuc<List<CategoryDTOResponse>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetCategories()
         {
-           var categories =  await _categoryService.GetAllAsync();
+           var categories =  await _categoryService.GetAllAsync(q=>q.IsActive==true && q.IsDeleted==false);
 
             if (categories!=null)
             {
@@ -134,6 +134,25 @@ namespace ShoppingAPI.Api.Controllers
             await _categoryService.UpdateAsync(category);
 
             return Ok(Sonuc<CategoryDTOResponse>.SuccessWithoutData());
+        }
+
+        [HttpPost("/RemoveCategory/{categoryGUID}")]
+        [ProducesResponseType(typeof(Sonuc<bool>), (int)HttpStatusCode.OK)]
+
+        public async Task<IActionResult>RemoveCategory(Guid categoryGUID)
+        {
+
+            Category category = await _categoryService.GetAsync(q => q.GUID == categoryGUID);
+
+
+            //category.IsActive = !category.IsActive;
+
+            category.IsActive = false;
+            category.IsDeleted = true;
+
+            await _categoryService.UpdateAsync(category);
+
+            return Ok(Sonuc<bool>.SuccessWithData(true));
         }
 
     }
