@@ -47,6 +47,7 @@ namespace Shopping.DAL.Concrete.EntityFramework.DataManagement
                     item.Entity.UpdatedTime=DateTime.Now;
                     item.Entity.AddedUser = 1;
                     item.Entity.UpdatedUser = 1;
+                    item.Entity.GUID = Guid.NewGuid();
                     item.Entity.AddedIPV4Adress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
                     item.Entity.UpdatedIPV4Adress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
 

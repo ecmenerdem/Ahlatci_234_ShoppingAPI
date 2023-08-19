@@ -11,7 +11,7 @@ using ShoppingAPI.Entity.Base;
 
 namespace Shopping.DAL.Concrete.EntityFramework.DataManagement
 {
-    public class EfRepository<T>:IRepository<T>where T:AuditableEntity
+    public class EfRepository<T> : IRepository<T> where T : AuditableEntity
     {
         private readonly DbContext _context;
         private readonly DbSet<T> _dbset;
@@ -27,12 +27,12 @@ namespace Shopping.DAL.Concrete.EntityFramework.DataManagement
         public async Task<T> GetAsync(Expression<Func<T, bool>> Filter, params string[] IncludeProperties)
         {
             IQueryable<T> query = _dbset;
-           query = query.Where(Filter);
-            if (IncludeProperties.Length>0)
+            query = query.Where(Filter);
+            if (IncludeProperties.Length > 0)
             {
                 foreach (var item in IncludeProperties)
                 {
-                    query.Include(item);
+                    query = query.Include(item);
                 }
             }
 
@@ -44,7 +44,7 @@ namespace Shopping.DAL.Concrete.EntityFramework.DataManagement
         {
             IQueryable<T> query = _dbset;
 
-            if (Filter!=null)
+            if (Filter != null)
             {
                 query = query.Where(Filter);/* select * from product where id>5 */
             }
@@ -53,11 +53,11 @@ namespace Shopping.DAL.Concrete.EntityFramework.DataManagement
             {
                 foreach (var item in IncludeProperties)
                 {
-                    query.Include(item);
+                    query = query.Include(item);
                 }
             }
 
-            return await Task.Run(()=>query);
+            return await Task.Run(() => query);
         }
 
         /* UserRepository.AddAsync(user) */
@@ -68,7 +68,7 @@ namespace Shopping.DAL.Concrete.EntityFramework.DataManagement
 
         public async Task UpdateAsync(T Entity)
         {
-          await Task.Run(() => _dbset.Update(Entity));
+            await Task.Run(() => _dbset.Update(Entity));
         }
 
         public async Task RemoveAsync(T Entity)

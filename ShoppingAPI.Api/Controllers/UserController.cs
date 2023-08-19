@@ -58,7 +58,6 @@ namespace ShoppingAPI.Api.Controllers
 
         [HttpGet("/User/{guid}")]
         [ProducesResponseType(typeof(Sonuc<UserDTOResponse>), (int)HttpStatusCode.OK)]
-
         public async Task<IActionResult> GetUser(Guid guid)
         {
             var user = await _userService.GetAsync(q => q.GUID == guid);
@@ -77,5 +76,22 @@ namespace ShoppingAPI.Api.Controllers
             }
 
         }
+
+        [HttpGet("/Users")]
+        [ProducesResponseType(typeof(Sonuc<List<UserDTOResponse>>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _userService.GetAllAsync();
+
+            List<UserDTOResponse> usersDTOResponseList = new List<UserDTOResponse>();
+
+            foreach (var user in users)
+            {
+                var userDTO = _mapper.Map<UserDTOResponse>(user);
+                usersDTOResponseList.Add(userDTO);
+            }
+            return Ok(Sonuc<List<UserDTOResponse>>.SuccessWithData(usersDTOResponseList));
+        }
+
     }
 }
